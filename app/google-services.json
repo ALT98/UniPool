@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "702475320213",
+    "firebase_url": "https://unipool-a3c61.firebaseio.com",
+    "project_id": "unipool-a3c61",
+    "storage_bucket": "unipool-a3c61.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:702475320213:android:de9c0b2368e4b8866f549c",
+        "android_client_info": {
+          "package_name": "com.example.unipool"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "702475320213-r55kglbi961n3t09397i93853uok26ca.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.unipool",
+            "certificate_hash": "97d7b728c137a47a54fa6cfa269b6f2e422913a3"
+          }
+        },
+        {
+          "client_id": "702475320213-1237k1h5tb2r3j593bif9g9qhqd33ffp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVf0BU27Wlyw_jn7c7-5wX2rEZK7x8i4M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "702475320213-1237k1h5tb2r3j593bif9g9qhqd33ffp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

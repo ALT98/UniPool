@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">UniPool</string>
+    <string name="txtEmail">Correo</string>
+    <string name="txtPassword">Contraseña</string>
+    <string name="btnLogin">Iniciar Sesion</string>
+    <string name="btnNewAccount">Crear cuenta</string>
+    <string name="newAccount">Crear una cuenta</string>
+    <string name="name">Nombre</string>
+    <string name="studentId">Matricula</string>
+    <string name="dependency">Dependencia</string>
+    <string name="email">Correo</string>
+    <string name="name_required">El nombre es requerido</string>
+</resources>
