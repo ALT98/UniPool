@@ -9,5 +9,6 @@
     <string name="studentId">Matricula</string>
     <string name="dependency">Dependencia</string>
     <string name="email">Correo</string>
+    <string name="password">Contraseña</string>
     <string name="name_required">El nombre es requerido</string>
 </resources>

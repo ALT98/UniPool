@@ -5,29 +5,28 @@ public class Student {
     int student_id;
     String dependency;
     String email;
+    String password;
     int typeOfAccount;
 
     public Student(){
 
     }
 
-    @Override
-    public String toString() {
-        return "Student{" +
-                "student_name='" + student_name + '\'' +
-                ", student_id=" + student_id +
-                ", dependency='" + dependency + '\'' +
-                ", email='" + email + '\'' +
-                ", typeOfAccount=" + typeOfAccount +
-                '}';
-    }
-
-    public Student(int student_id, String student_name, String dependency, String email, int typeOfAccount){
+    public Student(int student_id, String student_name, String dependency, String email, String password, int typeOfAccount) {
         this.student_name = student_name;
         this.student_id = student_id;
         this.dependency = dependency;
         this.email = email;
+        this.password = password;
         this.typeOfAccount = typeOfAccount;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getStudent_name() {
@@ -66,7 +65,7 @@ public class Student {
         return typeOfAccount;
     }
 
-    public void setTypeOfAccount(byte typeOfAccount) {
+    public void setTypeOfAccount(int typeOfAccount) {
         this.typeOfAccount = typeOfAccount;
     }
 }
