@@ -8,25 +8,25 @@
 
     <ImageView
         android:id="@+id/imgPassenger"
-        android:layout_width="297dp"
-        android:layout_height="130dp"
+        android:layout_width="322dp"
+        android:layout_height="215dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.488"
+        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.072"
+        app:layout_constraintVertical_bias="0.129"
         app:srcCompat="@drawable/pasajero" />
 
     <ImageView
         android:id="@+id/imgDriver"
-        android:layout_width="166dp"
-        android:layout_height="130dp"
+        android:layout_width="322dp"
+        android:layout_height="215dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.435"
+        app:layout_constraintVertical_bias="0.792"
         app:srcCompat="@drawable/conductor" />
 </androidx.constraintlayout.widget.ConstraintLayout>
