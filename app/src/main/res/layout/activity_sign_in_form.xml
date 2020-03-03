@@ -60,9 +60,10 @@
 
     <Button
         android:id="@+id/btnNewAccount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="137dp"
+        android:layout_height="47dp"
         android:layout_marginBottom="88dp"
+        android:background="@color/colorAccent"
         android:text="@string/btnNewAccount"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

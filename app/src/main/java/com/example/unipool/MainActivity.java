@@ -67,6 +67,12 @@ public class MainActivity extends AppCompatActivity {
             db.close();
             if(student.getEmail().equals(email) && student.getPassword().equals(password)){
                 Toast.makeText(this, "Bienvenido " + student.getStudent_name(), Toast.LENGTH_SHORT).show();
+                if(student.getTypeOfAccount() == 2){
+                    Intent intent = new Intent(this, HomeActivity.class);
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(this, "Bienvenido " + student.getStudent_name() + ", tipo de Cuenta: Pasajero", Toast.LENGTH_SHORT).show();
+                }
             }else {
                 Toast.makeText(this,"Contraseña equivocada", Toast.LENGTH_LONG).show();
             }
