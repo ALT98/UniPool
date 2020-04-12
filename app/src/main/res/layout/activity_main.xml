@@ -23,9 +23,10 @@
         android:layout_width="368dp"
         android:layout_height="49dp"
         android:layout_marginTop="12dp"
+        android:background="@color/colorAccent"
         android:text="@string/newAccount"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.488"
+        app:layout_constraintHorizontal_bias="0.511"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
 
@@ -33,7 +34,7 @@
         android:id="@+id/txtPassword"
         android:layout_width="368dp"
         android:layout_height="49dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="20dp"
         android:ems="10"
         android:hint="@string/txtPassword"
         android:inputType="textPassword"
@@ -46,12 +47,12 @@
         android:id="@+id/txtCorreo"
         android:layout_width="368dp"
         android:layout_height="49dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="100dp"
         android:ems="10"
         android:hint="@string/txtEmail"
         android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.511"
+        app:layout_constraintHorizontal_bias="0.488"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 
@@ -59,14 +60,14 @@
         android:id="@+id/btnLogin"
         android:layout_width="368dp"
         android:layout_height="49dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="44dp"
+        android:background="@color/colorAccent"
         android:onClick="mostrar"
         android:text="@string/btnLogin"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.511"
+        app:layout_constraintHorizontal_bias="0.488"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtPassword" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

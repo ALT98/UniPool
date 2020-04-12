@@ -8,8 +8,9 @@ public class Utilities {
     public static final String DEPENDENCY = "dependency";
     public static final String TYPE_OF_ACCOUNT = "typeOfAccount";
     public static final String EMAIL = "email";
+    public static final String PASSWORD = "student_password";
 
     public static final String CREATE_TABLE_USER = "CREATE TABLE "+ USER_TABLE +" ("+ STUDENT_ID +" INTEGER, "+ STUDENT_NAME + " TEXT, " +
-            DEPENDENCY + " TEXT, " + EMAIL + " TEXT, " + TYPE_OF_ACCOUNT + " INTEGER)";
+            DEPENDENCY + " TEXT, " + EMAIL + " TEXT, " + TYPE_OF_ACCOUNT + " INTEGER, " + PASSWORD +" TEXT)";
 
 }

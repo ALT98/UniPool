@@ -9,5 +9,11 @@
     <string name="studentId">Matricula</string>
     <string name="dependency">Dependencia</string>
     <string name="email">Correo</string>
+    <string name="password">Contraseña</string>
     <string name="name_required">El nombre es requerido</string>
+    <string name="travel_destination">Destino del viaje</string>
+    <string name="max_capacity">Capacidad máxima</string>
+    <string name="meeting_point">Punto de encuentro</string>
+    <string name="fee">Cuota</string>
+    <string name="startTrip">Empezar viaje</string>
 </resources>
