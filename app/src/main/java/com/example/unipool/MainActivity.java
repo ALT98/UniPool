@@ -11,29 +11,42 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class MainActivity extends AppCompatActivity {
     private Button btnSignIn;
     private Button btnLogIn;
     private TextView textEmail;
     private TextView textPassword;
 
-
-    DbConnection dbConnection;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://unipool-app.herokuapp.com")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        final StudentService service = retrofit.create(StudentService.class);
+
         textEmail = findViewById(R.id.txtCorreo);
         textPassword = findViewById(R.id.txtPassword);
-
-        dbConnection = new DbConnection(this, "UniPool", null, 1);
 
         btnLogIn = findViewById(R.id.btnLogin);
         btnLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                readUsers();
+                String email = textEmail.getText().toString().trim();
+                String password = textPassword.getText().toString().trim();
+                Login(service, email, password);
             }
         });
 
@@ -52,34 +65,45 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void readUsers(){
-        String email = textEmail.getText().toString().trim();
-        String password = textPassword.getText().toString().trim();
-
-        SQLiteDatabase db = dbConnection.getReadableDatabase();
-        String[] parameters = {email};
-        String[] campos = {Utilities.STUDENT_ID, Utilities.STUDENT_NAME, Utilities.DEPENDENCY, Utilities.EMAIL, Utilities.PASSWORD, Utilities.TYPE_OF_ACCOUNT};
-        try{
-            Cursor cursor = db.query(Utilities.USER_TABLE, campos, Utilities.EMAIL+ "= ? ", parameters, null,null,null);
-            cursor.moveToFirst();
-            Student student = new Student(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4) ,cursor.getInt(5));
-            cursor.close();
-            db.close();
-            if(student.getEmail().equals(email) && student.getPassword().equals(password)){
-                Toast.makeText(this, "Bienvenido " + student.getStudent_name(), Toast.LENGTH_SHORT).show();
-                if(student.getTypeOfAccount() == 2){
-                    Intent intent = new Intent(this, HomeActivity.class);
-                    startActivity(intent);
+    public void Login(StudentService service, final String email, String password) {
+        btnLogIn.setEnabled(false);
+        Call<Student> createCall = service.Login(email, password);
+        createCall.enqueue(new Callback<Student>() {
+            @Override
+            public void onResponse(Call<Student> call, Response<Student> response) {
+                if(response.isSuccessful()){
+                    Student testStudent = response.body();
+                    if(testStudent.getEmail().equals(email)){
+                        String typeOfAccount = "" + testStudent.getTypeOfAccount();
+                        String studentID = "" + testStudent.getStudent_id();
+                        String studentName = testStudent.getStudent_name();
+                        if(typeOfAccount.equals("2")){
+                            Intent intent = new Intent(MainActivity.this, HomeDriverActivity.class);
+                            intent.putExtra("studentName", studentName);
+                            intent.putExtra("studentID", studentID);
+                            startActivity(intent);
+                        }else if(typeOfAccount.equals("1")){
+                            Toast.makeText(MainActivity.this, "prueba", Toast.LENGTH_SHORT).show();
+                            Intent intent1 = new Intent(MainActivity.this, StudentTravelActivity.class);
+                            intent1.putExtra("studentName", studentName);
+                            intent1.putExtra("studentID", studentID);
+                            startActivity(intent1);
+                        }
+                    }
                 }else{
-                    Toast.makeText(this, "Bienvenido " + student.getStudent_name() + ", tipo de Cuenta: Pasajero", Toast.LENGTH_SHORT).show();
+                    if(response.code() == 500){
+                        Toast.makeText(MainActivity.this, "Unhandled exception: User does not exist", Toast.LENGTH_SHORT).show();
+                        btnLogIn.setEnabled(true);
+                    }
                 }
-            }else {
-                Toast.makeText(this,"Contraseña equivocada", Toast.LENGTH_LONG).show();
             }
-        }catch(Exception e){
-            Toast.makeText(this, "El usuario no existe.", Toast.LENGTH_LONG).show();
-        }
-    }
 
+            @Override
+            public void onFailure(Call<Student> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "I'm in troubles to get Internet... Try again.", Toast.LENGTH_SHORT).show();
+                btnLogIn.setEnabled(true);
+            }
+        });
+    }
 
 }

@@ -14,6 +14,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class SignInFormActivity extends AppCompatActivity {
 /*
 *  ------- Intent -------
@@ -27,6 +36,7 @@ public class SignInFormActivity extends AppCompatActivity {
     private TextView textDependency;
     private TextView textEmail;
     private TextView textPassword;
+    private TextView textPhone_Number;
     private Button buttonNewAccount;
     private ImageView imgNewAccount;
 
@@ -43,6 +53,7 @@ public class SignInFormActivity extends AppCompatActivity {
         textPassword = findViewById(R.id.textPassword);
         buttonNewAccount = findViewById(R.id.btnNewAccount);
         imgNewAccount = findViewById(R.id.imgNewAccount);
+        textPhone_Number = findViewById(R.id.textPhone_Number);
 
         Intent intent = getIntent();
         final String typeOfAccount = intent.getStringExtra("typeOfAccount");
@@ -50,37 +61,58 @@ public class SignInFormActivity extends AppCompatActivity {
         buttonNewAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                buttonNewAccount.setEnabled(false);
                 createAccount(typeOfAccount);
             }
         });
     }
 
     public void createAccount(String typeOfAccount){
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://unipool-app.herokuapp.com")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        final StudentService service = retrofit.create(StudentService.class);
+
         String name = textName.getText().toString().trim();
         String student_id = textStudent_id.getText().toString().trim();
         String dependency = textDependency.getText().toString().trim();
         String email = textEmail.getText().toString().trim();
         String password = textPassword.getText().toString().trim();
+        String phone_number = textPhone_Number.getText().toString().trim();
 
-        if(validateForm(name, student_id, dependency, email, password, typeOfAccount) && !isDuplicatedEmail(email)){
-            DbConnection dbConnection = new DbConnection(this, "UniPool", null, 1);
-            SQLiteDatabase db =   dbConnection.getWritableDatabase();
-            ContentValues values = new ContentValues();
+        if(emailVerification(email)){
+            try{
+                Student student = new Student(name, Integer.parseInt(student_id), dependency, email, password, Integer.parseInt(typeOfAccount), phone_number);
+                Call<Integer> createCall = service.create(student);
+                createCall.enqueue(new Callback<Integer>() {
+                    @Override
+                    public void onResponse(Call<Integer> _, Response<Integer> resp) {
+                        if(!resp.isSuccessful()){
+                            try {
+                                Toast.makeText(SignInFormActivity.this, "Error: " + resp.errorBody().string(), Toast.LENGTH_SHORT).show();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }else{
+                            Toast.makeText(SignInFormActivity.this, "Nueva cuenta creada", Toast.LENGTH_LONG).show();
+                            Intent goHome = new Intent(SignInFormActivity.this, MainActivity.class);
+                            startActivity(goHome);
+                        }
+                    }
 
-            values.put(Utilities.STUDENT_ID, Integer.parseInt(student_id));
-            values.put(Utilities.STUDENT_NAME, name);
-            values.put(Utilities.DEPENDENCY, dependency);
-            values.put(Utilities.EMAIL, email);
-            values.put(Utilities.PASSWORD, password);
-            values.put(Utilities.TYPE_OF_ACCOUNT, typeOfAccount);
-
-            Long result = db.insert(Utilities.USER_TABLE, Utilities.STUDENT_ID, values);
-            db.close();
-
-            Toast.makeText(this, "Se ha creado tu cuenta.", Toast.LENGTH_SHORT).show();
-
-            Intent goLogin = new Intent(this, MainActivity.class);
-            startActivity(goLogin);
+                    @Override
+                    public void onFailure(Call<Integer> _, Throwable t) {
+                        String error = t.getCause().toString();
+                        Toast.makeText(SignInFormActivity.this, error, Toast.LENGTH_LONG).show();
+                        buttonNewAccount.setEnabled(true);
+                    }
+                });
+            }catch (Exception e){
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }else{
+            buttonNewAccount.setEnabled(true);
         }
     }
 
@@ -107,70 +139,7 @@ public class SignInFormActivity extends AppCompatActivity {
     }
 
     public boolean validateForm(String name, String mat, String dependency, String email, String password, String typeOfAccount){
-        if(!name.isEmpty() && !mat.isEmpty() && !dependency.isEmpty() && !email.isEmpty() && !password.isEmpty() && !typeOfAccount.isEmpty()){
-            if(emailVerification(email)){
-                if(TextUtils.isDigitsOnly(mat)){
-                    if(!isDuplicatedEmail(email)){
-                        if (!isDuplicatedStudent_Id(mat)){
-                            return true;
-                        }else{
-                            Toast.makeText(this, "La matricula ya existe", Toast.LENGTH_LONG).show();
-                            return false;
-                        }
-                    }else{
-                        Toast.makeText(this, "Este correo ya está registrado", Toast.LENGTH_LONG).show();
-                        return false;
-                    }
-                }else{
-                    Toast.makeText(this, "La matricula debe ser numérica", Toast.LENGTH_SHORT).show();
-                    return false;
-                }
-            }else{
-                return false;
-            }
-        }else{
-            Toast.makeText(this, "Favor de llenar todos los campos", Toast.LENGTH_LONG).show();
-            return false;
-        }
-    }
-
-    public boolean isDuplicatedEmail(String email){
-        DbConnection dbConnection = new DbConnection(this, "UniPool", null, 1);
-        SQLiteDatabase db = dbConnection.getReadableDatabase();
-        String[] parameters = {email};
-        String[] campos = {Utilities.EMAIL};
-        String compare;
-        try{
-            Cursor cursor = db.query(Utilities.USER_TABLE, campos, Utilities.EMAIL+ "= ? ", parameters, null,null,null);
-            cursor.moveToFirst();
-            compare = cursor.getString(0);
-            cursor.close();
-            db.close();
-            return true;
-        }catch(Exception e){
-            return false;
-        }
-    }
-
-    public boolean isDuplicatedStudent_Id(String student_id){
-        DbConnection dbConnection = new DbConnection(this, "UniPool", null, 1);
-        SQLiteDatabase db = dbConnection.getReadableDatabase();
-        String[] parameters = {student_id};
-        String[] campos = {Utilities.STUDENT_ID};
-        try{
-            Cursor cursor = db.query(Utilities.USER_TABLE, campos, Utilities.STUDENT_ID+ "= ? ", parameters, null,null,null);
-            cursor.moveToFirst();
-            int aux = cursor.getInt(0);
-            cursor.close();
-            db.close();
-            if(aux == Integer.parseInt(student_id)){
-                return true;
-            }else{
-                return false;
-            }
-        }catch(Exception e){
-            return false;
-        }
+        return true;
     }
 
     public void cleanTextViews(){

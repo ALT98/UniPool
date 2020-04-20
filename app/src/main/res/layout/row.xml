@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    >
+
+    <TextView
+        android:id="@+id/textViewDestination"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Destino: "
+        android:textColor="#000"
+        android:textStyle="bold"
+        android:layout_margin="5dp"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/textViewId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ID del viaje: "
+        android:textColor="#000"
+        android:textStyle="bold"
+        android:layout_margin="5dp"
+        android:textSize="15sp"/>
+
+    <TextView
+        android:id="@+id/textViewSeats"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Asientos disponibles: "
+        android:textColor="#000"
+        android:textStyle="bold"
+        android:layout_margin="5dp"
+        android:textSize="15sp"/>
+
+    <TextView
+        android:id="@+id/textViewTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Hora de salida: "
+        android:textColor="#000"
+        android:textStyle="bold"
+        android:layout_margin="5dp"
+        android:textSize="15sp"/>
+
+    <TextView
+        android:id="@+id/textViewFare"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cuota: "
+        android:textColor="#000"
+        android:textStyle="bold"
+        android:layout_margin="5dp"
+        android:textSize="15sp"/>
+</LinearLayout>
