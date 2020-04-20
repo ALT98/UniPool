@@ -64,7 +64,6 @@ public class StudentTravelActivity extends AppCompatActivity {
                             if(response.isSuccessful()){
                                 Trips trips = response.body();
                                 List<Trips> tripsList = trips.getTripsList();
-                                Toast.makeText(StudentTravelActivity.this, tripsList.toString(), Toast.LENGTH_SHORT).show();
                                 List<String> destinations = new ArrayList<>();
                                 List<String> departureTime = new ArrayList<>();
                                 List<String> id = new ArrayList<>();

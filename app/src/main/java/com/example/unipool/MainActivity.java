@@ -83,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
                             intent.putExtra("studentID", studentID);
                             startActivity(intent);
                         }else if(typeOfAccount.equals("1")){
-                            Toast.makeText(MainActivity.this, "prueba", Toast.LENGTH_SHORT).show();
                             Intent intent1 = new Intent(MainActivity.this, StudentTravelActivity.class);
                             intent1.putExtra("studentName", studentName);
                             intent1.putExtra("studentID", studentID);
