@@ -1,12 +1,14 @@
 package com.example.unipool;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -39,6 +41,10 @@ public class StudentTravelActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_travel);
+
+        Intent intent = getIntent();
+        final String studentID = intent.getStringExtra("studentID");
+        final String studentName = intent.getStringExtra("studentName");
 
         textSearchQuery = findViewById(R.id.textSearchQuery);
         listView = findViewById(R.id.listView);
@@ -92,9 +98,10 @@ public class StudentTravelActivity extends AppCompatActivity {
                                     listView.setAdapter(arrayAdapter);
                                     return;
                                 }
+
                                 String[] array1 = new String[destinations.size()];
                                 String[] array2 = new String[departureTime.size()];
-                                String[] array3 = new String[id.size()];
+                                final String[] array3 = new String[id.size()];
                                 String[] array4 = new String[fare.size()];
                                 String[] array5 = new String[seats.size()];
 
@@ -106,6 +113,18 @@ public class StudentTravelActivity extends AppCompatActivity {
 
                                 MyAdapter adapter = new MyAdapter(StudentTravelActivity.this, array1, array2, array3, array4, array5);
                                 listView.setAdapter(adapter);
+                                listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                                    @Override
+                                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long ID) {
+                                        Intent intent = new Intent(StudentTravelActivity.this, PopUp.class);
+                                        intent.putExtra("travel_id", array3[position]);
+                                        intent.putExtra("student_id", studentID);
+                                        startActivity(intent);
+
+                                        return false;
+                                    }
+                                });
+
                             }else{
                                 switch (response.code()){
                                     case 500:
@@ -163,4 +182,7 @@ public class StudentTravelActivity extends AppCompatActivity {
             return row;
         }
     }
+
+
+
 }

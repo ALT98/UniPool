@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
@@ -27,6 +28,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -51,6 +53,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -73,9 +76,6 @@ public class HomeDriverActivity extends FragmentActivity implements OnMapReadyCa
     LatLng destination = null;
     Polyline polyline = null;
     PolylineOptions polylineOptions = null;
-    private LocationRequest locationRequest;
-    private Location lastLocation;
-    private Marker currrentUserLocationMarker;
     private static final int Request_User_Location_Code = 99;
     private TextInputLayout textTravelDestination;
     private TextInputLayout textMaxCapacity;
@@ -109,6 +109,36 @@ public class HomeDriverActivity extends FragmentActivity implements OnMapReadyCa
 
         button = findViewById(R.id.button);
 
+        final Calendar c = Calendar.getInstance();
+        final int hour = c.get(Calendar.HOUR_OF_DAY);
+        final int minute = c.get(Calendar.MINUTE);
+        textDepartureTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TimePickerDialog timePickerDialog = new TimePickerDialog(HomeDriverActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        String hour = "";
+                        if(hourOfDay >= 0 && hourOfDay <= 9){
+                            hour += "0" + hourOfDay;
+                        }else{
+                            hour += hourOfDay;
+                        }
+
+                        if(minute >=0 && minute <= 9){
+                            hour += ":0" + minute;
+                        }else{
+                            hour+= ":" + minute;
+                        }
+
+                        textDepartureTime.getEditText().setText(hour);
+                        textDepartureTime.setEnabled(false);
+                    }
+                }, hour, minute, true);
+                timePickerDialog.show();
+            }
+        });
+
         button.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
@@ -118,6 +148,8 @@ public class HomeDriverActivity extends FragmentActivity implements OnMapReadyCa
                 String meetingPoint = textMeetingPoint.getEditText().getText().toString();
                 String fare = textFare.getEditText().getText().toString();
                 String departureTime = textDepartureTime.getEditText().getText().toString();
+                String originLatitude = "" + origin.latitude;
+                String originLongitude = "" + origin.longitude;
 
                 button.setEnabled(false);
 
@@ -134,18 +166,9 @@ public class HomeDriverActivity extends FragmentActivity implements OnMapReadyCa
                     trip.setMaxCapacity(Integer.parseInt(maxCapacity));
                     trip.setMeetingLocation(meetingPoint);
                     trip.setFare(Integer.parseInt(fare));
-
-                    SimpleDateFormat input = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    SimpleDateFormat output = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-                    try {
-                        Date d = input.parse(departureTime);
-                        String formatted = output.format(d);
-                        trip.setDepartureTime(formatted);
-                    } catch (ParseException e) {
-                        Toast.makeText(HomeDriverActivity.this, "Ingresa una fecha valida.", Toast.LENGTH_LONG).show();
-                        button.setEnabled(true);
-                        return;
-                    }
+                    trip.setOriginLatitude(originLatitude);
+                    trip.setOriginLongitude(originLongitude);
+                    trip.setDepartureTime(departureTime);
 
                     Call<Integer> call = service.registerTrip(trip);
                     call.enqueue(new Callback<Integer>() {
@@ -154,6 +177,7 @@ public class HomeDriverActivity extends FragmentActivity implements OnMapReadyCa
                             if(!response.isSuccessful()){
                                 try {
                                     Toast.makeText(HomeDriverActivity.this, "Error: " + response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                                    button.setEnabled(true);
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
@@ -161,6 +185,7 @@ public class HomeDriverActivity extends FragmentActivity implements OnMapReadyCa
                                 Integer resp = response.body();
                                 Toast.makeText(HomeDriverActivity.this, "Viaje registrado\nID viaje: " + resp.intValue(), Toast.LENGTH_LONG).show();
                                 Intent intent = new Intent(getApplicationContext(), InTravelActivity.class);
+                                intent.putExtra("trip_id", resp.intValue());
                                 startActivity(intent);
                             }
                         }
@@ -219,9 +244,11 @@ public class HomeDriverActivity extends FragmentActivity implements OnMapReadyCa
             map.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
                 @Override
                 public void onMyLocationChange(Location location) {
+                    origin = new LatLng(location.getLatitude(), location.getLongitude());
                     polylineOptions = new PolylineOptions().add(destination)
                             .add(new LatLng(location.getLatitude(), location.getLongitude()));
                     polyline = map.addPolyline(polylineOptions);
+
                 }
             });
 
@@ -289,14 +316,7 @@ public class HomeDriverActivity extends FragmentActivity implements OnMapReadyCa
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        /*locationRequest = new LocationRequest();
-        locationRequest.setInterval(1100);
-        locationRequest.setFastestInterval(1100);
-        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient,locationRequest, (com.google.android.gms.location.LocationListener) this);
-        }*/
     }
 
     @Override
@@ -311,21 +331,7 @@ public class HomeDriverActivity extends FragmentActivity implements OnMapReadyCa
 
     @Override
     public void onLocationChanged(Location location) {
-        /*lastLocation = location;
-        origin = new LatLng(location.getLatitude(), location.getLongitude());
-        Toast.makeText(this, "" + origin.latitude, Toast.LENGTH_SHORT).show();
-        if(currrentUserLocationMarker != null){
-            currrentUserLocationMarker.remove();
-        }
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        MarkerOptions mark = new MarkerOptions();
-        mark.position(latLng).title("User current position").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-        currrentUserLocationMarker = map.addMarker(mark);
-        map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        map.animateCamera(CameraUpdateFactory.zoomBy(12));
-        if(googleApiClient != null){
-            LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, (com.google.android.gms.location.LocationListener) this);
-        }*/
+
     }
 
     @Override

@@ -26,14 +26,22 @@ public class Trip{
     @SerializedName("DepartureTime")
     @Expose
     private String DepartureTime;
+    @SerializedName("CoordinatesLatitude")
+    @Expose
+    private String originLatitude;
+    @SerializedName("CoordinatesLongitude")
+    @Expose
+    private String originLongitude;
 
-    public Trip(int driverId, String destination, int maxCapacity, String meetingLocation, int fare, String departureTime) {
+    public Trip(int driverId, String destination, int maxCapacity, String meetingLocation, int fare, String departureTime, String originLatitude, String originLongitude) {
         DriverId = driverId;
         Destination = destination;
         MaxCapacity = maxCapacity;
         MeetingLocation = meetingLocation;
         Fare = fare;
         DepartureTime = departureTime;
+        this.originLatitude = originLatitude;
+        this.originLongitude = originLongitude;
     }
 
     public Trip(){
@@ -88,6 +96,22 @@ public class Trip{
         DepartureTime = departureTime;
     }
 
+    public String getOriginLatitude() {
+        return originLatitude;
+    }
+
+    public void setOriginLatitude(String originLatitude) {
+        this.originLatitude = originLatitude;
+    }
+
+    public String getOriginLongitude() {
+        return originLongitude;
+    }
+
+    public void setOriginLongitude(String originLongitude) {
+        this.originLongitude = originLongitude;
+    }
+
     @Override
     public String toString() {
         return "Trip{" +
@@ -97,6 +121,8 @@ public class Trip{
                 ", MeetingLocation='" + MeetingLocation + '\'' +
                 ", Fare=" + Fare +
                 ", DepartureTime='" + DepartureTime + '\'' +
+                ", originLatitude='" + originLatitude + '\'' +
+                ", originLongitude='" + originLongitude + '\'' +
                 '}';
     }
 }

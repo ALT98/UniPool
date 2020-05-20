@@ -12,4 +12,10 @@ public interface TripService {
     @POST("drivers/RegisterTrip")
     Call<Integer> registerTrip(@Body Trip trip);
 
+    @POST("drivers/StartTrip")
+    Call<Integer> startTrip(@Body TripPassenger trip);
+
+    @POST("drivers/FinishTrip")
+    Call<Integer> finishTrip(@Body TripPassenger trip);
+
 }

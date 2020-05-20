@@ -26,8 +26,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class SignInFormActivity extends AppCompatActivity {
 /*
 *  ------- Intent -------
-*   1 Pasajero
-*   2 Conductor
+*   2 Pasajero
+*   1 Conductor
 *
 * */
 

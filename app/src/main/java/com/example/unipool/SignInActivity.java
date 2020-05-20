@@ -28,7 +28,7 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intentPassenger = new Intent(SignInActivity.this, SignInFormActivity.class);
-                intentPassenger.putExtra("typeOfAccount", "1");
+                intentPassenger.putExtra("typeOfAccount", "2");
                 startActivity(intentPassenger);
             }
         });
@@ -37,7 +37,7 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intentDriver = new Intent(SignInActivity.this, SignInFormActivity.class);
-                intentDriver.putExtra("typeOfAccount", "2");
+                intentDriver.putExtra("typeOfAccount", "1");
                 startActivity(intentDriver);
             }
         });

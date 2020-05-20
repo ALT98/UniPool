@@ -77,16 +77,18 @@ public class MainActivity extends AppCompatActivity {
                         String typeOfAccount = "" + testStudent.getTypeOfAccount();
                         String studentID = "" + testStudent.getStudent_id();
                         String studentName = testStudent.getStudent_name();
-                        if(typeOfAccount.equals("2")){
+                        if(typeOfAccount.equals("1")){
                             Intent intent = new Intent(MainActivity.this, HomeDriverActivity.class);
                             intent.putExtra("studentName", studentName);
                             intent.putExtra("studentID", studentID);
                             startActivity(intent);
-                        }else if(typeOfAccount.equals("1")){
+                            btnLogIn.setEnabled(true);
+                        }else if(typeOfAccount.equals("2")){
                             Intent intent1 = new Intent(MainActivity.this, StudentTravelActivity.class);
                             intent1.putExtra("studentName", studentName);
                             intent1.putExtra("studentID", studentID);
                             startActivity(intent1);
+                            btnLogIn.setEnabled(true);
                         }
                     }
                 }else{

@@ -17,7 +17,7 @@
     <string name="meeting_point">Punto de encuentro</string>
     <string name="fee">Cuota</string>
     <string name="startTrip">Empezar viaje</string>
-    <string name="departureTime">Hora de salida aaaa-MM-dd HH:mm:ss</string>
+    <string name="departureTime">Hora de salida</string>
     <string name="map_key" translatable="false">
         AIzaSyCMsMH2eQBdfBx-NlpM9Q8ai9iNIikCYSo
     </string>
