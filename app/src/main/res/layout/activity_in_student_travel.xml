@@ -6,17 +6,27 @@
     android:layout_height="match_parent"
     tools:context=".InStudentTravelActivity">
 
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="416dp"
+        android:layout_height="241dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="364dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnExitTrip"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.333"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <Button
         android:id="@+id/btnExitTrip"
         android:layout_width="253dp"
         android:layout_height="50dp"
+        android:layout_marginBottom="72dp"
         android:background="#F50000"
         android:text="Cancelar viaje"
         android:textColor="#fff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.909" />
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

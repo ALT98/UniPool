@@ -186,6 +186,7 @@ public class HomeDriverActivity extends FragmentActivity implements OnMapReadyCa
                                 Toast.makeText(HomeDriverActivity.this, "Viaje registrado\nID viaje: " + resp.intValue(), Toast.LENGTH_LONG).show();
                                 Intent intent = new Intent(getApplicationContext(), InTravelActivity.class);
                                 intent.putExtra("trip_id", resp.intValue());
+                                intent.putExtra("student_id", studentID);
                                 startActivity(intent);
                             }
                         }

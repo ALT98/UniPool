@@ -3,16 +3,11 @@ package com.example.unipool;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.io.IOException;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         final StudentService service = retrofit.create(StudentService.class);
+        final DefinitiveTripsService serviceTrips = retrofit.create(DefinitiveTripsService.class);
+        final StudentCurrentTripService serviceStudent = retrofit.create(StudentCurrentTripService.class);
 
         textEmail = findViewById(R.id.txtCorreo);
         textPassword = findViewById(R.id.txtPassword);
@@ -46,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String email = textEmail.getText().toString().trim();
                 String password = textPassword.getText().toString().trim();
-                Login(service, email, password);
+                Login(service, serviceTrips, serviceStudent, email, password);
             }
         });
 
@@ -65,30 +62,77 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void Login(StudentService service, final String email, String password) {
+    public void Login(final StudentService service, final DefinitiveTripsService tripsService, final StudentCurrentTripService studentService, final String email, String password) {
         btnLogIn.setEnabled(false);
         Call<Student> createCall = service.Login(email, password);
         createCall.enqueue(new Callback<Student>() {
             @Override
             public void onResponse(Call<Student> call, Response<Student> response) {
                 if(response.isSuccessful()){
-                    Student testStudent = response.body();
+                    final Student testStudent = response.body();
                     if(testStudent.getEmail().equals(email)){
                         String typeOfAccount = "" + testStudent.getTypeOfAccount();
-                        String studentID = "" + testStudent.getStudent_id();
-                        String studentName = testStudent.getStudent_name();
+                        final String studentID = "" + testStudent.getStudent_id();
+                        final String studentName = testStudent.getStudent_name();
                         if(typeOfAccount.equals("1")){
-                            Intent intent = new Intent(MainActivity.this, HomeDriverActivity.class);
-                            intent.putExtra("studentName", studentName);
-                            intent.putExtra("studentID", studentID);
-                            startActivity(intent);
-                            btnLogIn.setEnabled(true);
+                            Call<DefinitiveTripsClass> newCall = tripsService.getCurrentTrip(testStudent.getStudent_id());
+                            newCall.enqueue(new Callback<DefinitiveTripsClass>() {
+                                @Override
+                                public void onResponse(Call<DefinitiveTripsClass> call, Response<DefinitiveTripsClass> response) {
+                                    if(response.isSuccessful()){
+                                        DefinitiveTripsClass test = response.body();
+                                        if(test.getTripId() > 0){
+                                            Intent currentTrip = new Intent(MainActivity.this, InTravelActivity.class);
+                                            currentTrip.putExtra("trip_id", test.getTripId());
+                                            currentTrip.putExtra("studentID", testStudent.getStudent_id());
+                                            btnLogIn.setEnabled(true);
+                                            startActivity(currentTrip);
+                                            return;
+                                        }
+                                    }else{
+                                        Intent intent = new Intent(MainActivity.this, HomeDriverActivity.class);
+                                        intent.putExtra("studentName", studentName);
+                                        intent.putExtra("studentID", studentID);
+                                        btnLogIn.setEnabled(true);
+                                        startActivity(intent);
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<DefinitiveTripsClass> call, Throwable t) {
+
+                                }
+                            });
+
                         }else if(typeOfAccount.equals("2")){
-                            Intent intent1 = new Intent(MainActivity.this, StudentTravelActivity.class);
-                            intent1.putExtra("studentName", studentName);
-                            intent1.putExtra("studentID", studentID);
-                            startActivity(intent1);
-                            btnLogIn.setEnabled(true);
+                            Call<StudentCurrentTrip> studentCall = studentService.getCurrentTrip(testStudent.getStudent_id());
+                            studentCall.enqueue(new Callback<StudentCurrentTrip>() {
+                                @Override
+                                public void onResponse(Call<StudentCurrentTrip> call, Response<StudentCurrentTrip> response) {
+                                    if(response.isSuccessful()){
+                                        StudentCurrentTrip test = response.body();
+                                        if(test.getTripId() > 0){
+                                            Intent currentTrip = new Intent(MainActivity.this, InStudentTravelActivity.class);
+                                            currentTrip.putExtra("trip_id", test.getTripId());
+                                            currentTrip.putExtra("student_id", testStudent.getStudent_id());
+                                            startActivity(currentTrip);
+                                            btnLogIn.setEnabled(true);
+                                            return;
+                                        }
+                                    }else{
+                                        Intent intent = new Intent(MainActivity.this, StudentTravelActivity.class);
+                                        intent.putExtra("studentName", studentName);
+                                        intent.putExtra("studentID", studentID);
+                                        btnLogIn.setEnabled(true);
+                                        startActivity(intent);
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<StudentCurrentTrip> call, Throwable t) {
+                                    Toast.makeText(MainActivity.this, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         }
                     }
                 }else{
