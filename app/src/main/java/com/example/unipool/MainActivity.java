@@ -1,13 +1,21 @@
 package com.example.unipool;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -16,6 +24,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
+
+    private FirebaseAuth mAuth;
     private Button btnSignIn;
     private Button btnLogIn;
     private TextView textEmail;
@@ -25,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mAuth = FirebaseAuth.getInstance();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://unipool-app.herokuapp.com")
@@ -62,13 +74,30 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void Login(final StudentService service, final DefinitiveTripsService tripsService, final StudentCurrentTripService studentService, final String email, String password) {
+    public void Login(final StudentService service, final DefinitiveTripsService tripsService, final StudentCurrentTripService studentService, final String email, final String password) {
         btnLogIn.setEnabled(false);
         Call<Student> createCall = service.Login(email, password);
         createCall.enqueue(new Callback<Student>() {
             @Override
             public void onResponse(Call<Student> call, Response<Student> response) {
                 if(response.isSuccessful()){
+
+                    mAuth.signInWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        // Sign in success, update UI with the signed-in user's information
+                                        FirebaseUser user = mAuth.getCurrentUser();
+                                    } else {
+                                        // If sign in fails, display a message to the user.
+                                        Toast.makeText(MainActivity.this, "Authentication failed.",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+
+                                }
+                            });
+
                     final Student testStudent = response.body();
                     if(testStudent.getEmail().equals(email)){
                         String typeOfAccount = "" + testStudent.getTypeOfAccount();
@@ -100,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 @Override
                                 public void onFailure(Call<DefinitiveTripsClass> call, Throwable t) {
-
+                                    Toast.makeText(MainActivity.this, "something", Toast.LENGTH_SHORT).show();
                                 }
                             });
 

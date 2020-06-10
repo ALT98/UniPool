@@ -36,6 +36,7 @@ public class InStudentTravelActivity extends AppCompatActivity implements OnMapR
     LatLng origin, endPoint;
     String destination;
     Button btnExitTrip;
+    Button btnChat;
     MarkerOptions markers;
     int tripId;
 
@@ -52,6 +53,7 @@ public class InStudentTravelActivity extends AppCompatActivity implements OnMapR
 
         btnExitTrip = findViewById(R.id.btnExitTrip);
         btnExitTrip.setEnabled(true);
+        btnChat = findViewById(R.id.btnChat);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://unipool-app.herokuapp.com")
@@ -63,6 +65,14 @@ public class InStudentTravelActivity extends AppCompatActivity implements OnMapR
         mapFragment.getMapAsync(this);
 
         //loadMapData(travel_id);
+
+        btnChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(InStudentTravelActivity.this, DriverChatActivity.class);
+                startActivity(intent);
+            }
+        });
 
         btnExitTrip.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -23,6 +23,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class InTravelActivity extends AppCompatActivity {
     ListView listView;
     TextView lbl;
+    Button btnChat;
     Button btnStartTrip;
     Button btnFinishTrip;
 
@@ -34,6 +35,7 @@ public class InTravelActivity extends AppCompatActivity {
         listView = findViewById(R.id.listView);
         btnFinishTrip = findViewById(R.id.btnFinishTrip);
         btnStartTrip = findViewById(R.id.btnStartTrip);
+        btnChat = findViewById(R.id.Chat);
         lbl = findViewById(R.id.textView);
 
         btnFinishTrip.setVisibility(View.INVISIBLE);
@@ -50,6 +52,14 @@ public class InTravelActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         final TripService service = retrofit.create(TripService.class);
+
+        btnChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(InTravelActivity.this, DriverChatActivity.class);
+                startActivity(intent);
+            }
+        });
 
         btnStartTrip.setOnClickListener(new View.OnClickListener() {
             @Override

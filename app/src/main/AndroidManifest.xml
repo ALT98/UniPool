@@ -13,8 +13,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".InStudentTravelActivity"></activity>
-        <activity android:name=".StudentTravelActivity"></activity>
+        <activity android:name=".DriverChatActivity"></activity>
+        <activity android:name=".InStudentTravelActivity" />
+        <activity android:name=".StudentTravelActivity" />
         <activity android:name=".InTravelActivity" />
 
         <meta-data
